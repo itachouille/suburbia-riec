@@ -17,12 +17,7 @@
           "config": {
             "label": "Theme",
             "placeholder": "",
-            "options": [
-              "Blue",
-              "Orange",
-              "Navy",
-              "Lime"
-            ]
+            "options": ["Blue", "Orange", "Navy", "Lime"]
           }
         },
         "heading": {
@@ -48,7 +43,8 @@
           "config": {
             "label": "Button",
             "placeholder": "",
-            "select": "media",
+            "select": null,
+            "allowTargetBlank": true,
             "allowText": true,
             "repeat": false
           }
@@ -85,12 +81,7 @@
           "config": {
             "label": "Theme",
             "placeholder": "",
-            "options": [
-              "Blue",
-              "Orange",
-              "Navy",
-              "Lime"
-            ]
+            "options": ["Blue", "Orange", "Navy", "Lime"]
           }
         },
         "heading": {
@@ -116,7 +107,8 @@
           "config": {
             "label": "Button",
             "placeholder": "",
-            "select": "media",
+            "select": null,
+            "allowTargetBlank": true,
             "allowText": true,
             "repeat": false
           }
