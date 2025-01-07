@@ -14,8 +14,8 @@ export function Skater({ skater, index }: Props) {
     "text-brand-blue",
     "text-brand-lime",
     "text-brand-orange",
-    "text-brand-pink",
     "text-brand-purple",
+    "text-brand-pink",
   ];
 
   const scribbleColor = colors[index];
