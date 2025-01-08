@@ -1,9 +1,18 @@
 import * as THREE from "three";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
+import { useFrame } from "@react-three/fiber";
 
-type SkateboardProps = {};
+type SkateboardProps = {
+  wheelTextureURLs: string[];
+  wheelTextureURL: string;
+  deckTextureURLs: string[];
+  deckTextureURL: string;
+  truckColor: string;
+  boltColor: string;
+  constantWheelSpin?: boolean;
+};
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -21,9 +30,60 @@ type GLTFResult = GLTF & {
   materials: {};
 };
 
-export function Skateboard(props: SkateboardProps) {
+export function Skateboard({
+  wheelTextureURLs,
+  wheelTextureURL,
+  deckTextureURLs,
+  deckTextureURL,
+  truckColor,
+  boltColor,
+  constantWheelSpin = false,
+}: SkateboardProps) {
+  const wheelRefs = useRef<THREE.Object3D[]>([]);
+
   const { nodes } = useGLTF("/skateboard.gltf") as GLTFResult;
 
+  // Wheel Textures
+  const wheelTextures = useTexture(wheelTextureURLs);
+  wheelTextures.forEach((texture) => {
+    texture.flipY = false;
+    texture.colorSpace = THREE.SRGBColorSpace;
+  });
+  const wheelTextureIndex = wheelTextureURLs.findIndex(
+    (url) => url === wheelTextureURL
+  );
+  const wheelTexture = wheelTextures[wheelTextureIndex];
+
+  const wheelMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        map: wheelTexture,
+        roughness: 0.35,
+      }),
+    [wheelTexture]
+  );
+
+  // Deck Textures
+  const deckTextures = useTexture(deckTextureURLs);
+  deckTextures.forEach((texture) => {
+    texture.flipY = false;
+    texture.colorSpace = THREE.SRGBColorSpace;
+  });
+  const deckTextureIndex = deckTextureURLs.findIndex(
+    (url) => url === deckTextureURL
+  );
+  const deckTexture = deckTextures[deckTextureIndex];
+
+  const deckMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        map: deckTexture,
+        roughness: 0.1,
+      }),
+    [deckTexture]
+  );
+
+  // Grip Texture
   const gripTapeDiffuse = useTexture("/skateboard/griptape-diffuse.webp");
   const gripTapeRoughness = useTexture("/skateboard/griptape-roughness.webp");
   const gripTapeMaterial = useMemo(() => {
@@ -53,7 +113,7 @@ export function Skateboard(props: SkateboardProps) {
     return material;
   }, [gripTapeDiffuse, gripTapeRoughness]);
 
-  const boltColor = "#b5a556";
+  // Bolt Texture
   const boltMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -64,12 +124,12 @@ export function Skateboard(props: SkateboardProps) {
     [boltColor]
   );
 
+  // Truck Texture
   const metalNormal = useTexture("/skateboard/metal-normal.avif");
   metalNormal.wrapS = THREE.RepeatWrapping;
   metalNormal.wrapT = THREE.RepeatWrapping;
   metalNormal.anisotropy = 8;
   metalNormal.repeat.set(8, 8);
-  const truckColor = "#566878";
   const truckMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -82,30 +142,29 @@ export function Skateboard(props: SkateboardProps) {
     [truckColor, metalNormal]
   );
 
-  const deckTexture = useTexture("/skateboard/Deck.webp");
-  deckTexture.flipY = false;
-  const deckMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        map: deckTexture,
-        roughness: 0.1,
-      }),
-    [deckTexture]
-  );
+  // Add Wheel Refs
+  const addToWheelRefs = (ref: THREE.Object3D | null) => {
+    if (ref && !wheelRefs.current.includes(ref)) {
+      wheelRefs.current.push(ref);
+    }
+  };
 
-  const wheelTexture = useTexture("/skateboard/SkateWheel1.png");
-  wheelTexture.flipY = false;
-  const wheelMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        map: wheelTexture,
-        roughness: 0.35,
-      }),
-    [wheelTexture]
-  );
+  useFrame(() => {
+    if (!wheelRefs.current || !constantWheelSpin) return;
+    for (const wheel of wheelRefs.current) {
+      wheel.rotation.x += 0.2;
+    }
+  });
+
+  useEffect(() => {
+    if (!wheelRefs.current || constantWheelSpin) return;
+    for (const wheel of wheelRefs.current) {
+      // GSAP slowdown rotation
+    }
+  }, [constantWheelSpin]);
 
   return (
-    <group {...props} dispose={null}>
+    <group dispose={null}>
       <group name="Scene">
         <mesh
           name="GripTape"
@@ -130,6 +189,7 @@ export function Skateboard(props: SkateboardProps) {
           geometry={nodes.Wheel1.geometry}
           material={wheelMaterial}
           position={[0.238, 0.086, 0.635]}
+          ref={addToWheelRefs}
         />
         <mesh
           name="Wheel2"
@@ -138,6 +198,7 @@ export function Skateboard(props: SkateboardProps) {
           geometry={nodes.Wheel2.geometry}
           material={wheelMaterial}
           position={[-0.237, 0.086, 0.635]}
+          ref={addToWheelRefs}
         />
         <mesh
           name="Wheel3"
@@ -147,6 +208,7 @@ export function Skateboard(props: SkateboardProps) {
           material={wheelMaterial}
           position={[0.237, 0.086, -0.635]}
           rotation={[Math.PI, 0, Math.PI]}
+          ref={addToWheelRefs}
         />
         <mesh
           name="Wheel4"
@@ -156,6 +218,7 @@ export function Skateboard(props: SkateboardProps) {
           material={wheelMaterial}
           position={[-0.238, 0.086, -0.635]}
           rotation={[Math.PI, 0, Math.PI]}
+          ref={addToWheelRefs}
         />
         <mesh
           name="Bolts"
