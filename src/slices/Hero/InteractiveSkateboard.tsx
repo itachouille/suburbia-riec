@@ -3,10 +3,11 @@
 import * as THREE from "three";
 import gsap from "gsap";
 import { Skateboard } from "@/components/Skateboard";
-import { ContactShadows, Environment } from "@react-three/drei";
+import { ContactShadows, Environment, Html } from "@react-three/drei";
 import { Canvas, ThreeEvent, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Hotspot } from "./Hotspot";
+import { WavyPaths } from "./WavyPaths";
 
 const INITIAL_CAMERA_POSITION = [1.5, 1, 1.4] as const;
 
@@ -61,6 +62,28 @@ function Scene({
 
   const { camera } = useThree();
 
+  /*  "Sliding skateboard" effect */
+  useEffect(() => {
+    if (!containerRef.current || !originRef.current) return;
+
+    gsap.to(containerRef.current.position, {
+      x: 0.2,
+      duration: 3,
+      repeat: -1 /* -1 === infinite */,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+
+    gsap.to(originRef.current.rotation, {
+      y: Math.PI / 64,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+  }, []);
+
+  /*  Small screen zoom */
   useEffect(() => {
     camera.lookAt(new THREE.Vector3(-0.2, 0.15, 0));
 
@@ -68,7 +91,6 @@ function Scene({
 
     window.addEventListener("reset", setZoom);
 
-    /* for mobile, make a zoom like this : */
     function setZoom() {
       const scale = Math.max(Math.min(1000 / window.innerWidth, 2.2), 1);
 
@@ -224,7 +246,25 @@ function Scene({
           </group>
         </group>
       </group>
+
+      {/* Skateboard shadow */}
       <ContactShadows opacity={0.6} position={[0, -0.08, 0]} />
+
+      {/*  Wave road effect */}
+      <group
+        rotation={[-Math.PI / 2, 0, -Math.PI / 2]}
+        position={[0, -0.09, -0.5]}
+        scale={[0.2, 0.2, 0.2]}
+      >
+        <Html
+          transform
+          zIndexRange={[1, 0]}
+          occlude="blending"
+          wrapperClass="pointer-events-none"
+        >
+          <WavyPaths />
+        </Html>
+      </group>
     </group>
   );
 }
