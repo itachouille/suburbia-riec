@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
+import gsap from "gsap";
 
 type SkateboardProps = {
   wheelTextureURLs: string[];
@@ -12,6 +13,7 @@ type SkateboardProps = {
   truckColor: string;
   boltColor: string;
   constantWheelSpin?: boolean;
+  pose?: "upright" | "side";
 };
 
 type GLTFResult = GLTF & {
@@ -38,6 +40,7 @@ export function Skateboard({
   truckColor,
   boltColor,
   constantWheelSpin = false,
+  pose = "upright",
 }: SkateboardProps) {
   const wheelRefs = useRef<THREE.Object3D[]>([]);
 
@@ -168,8 +171,28 @@ export function Skateboard({
     }
   }, [constantWheelSpin, wheelTextureURL]);
 
+  /* skateboard pose */
+  const positions = useMemo(
+    () =>
+      ({
+        upright: {
+          rotation: [0, 0, 0],
+          position: [0, 0, 0],
+        },
+        side: {
+          rotation: [0, 0, Math.PI / 2],
+          position: [0, 0.295, 0],
+        },
+      }) as const,
+    []
+  );
+
   return (
-    <group dispose={null}>
+    <group
+      dispose={null}
+      rotation={positions[pose].rotation}
+      position={positions[pose].position}
+    >
       <group name="Scene">
         <mesh
           name="GripTape"

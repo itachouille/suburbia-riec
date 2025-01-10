@@ -4,13 +4,13 @@ import { Content } from "@prismicio/client";
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 
 type CustomizeControlsContext = {
-  selectedWheel?: Content.BoardCustomizerDocumentDataWheelsItem;
+  selectedWheels?: Content.BoardCustomizerDocumentDataWheelsItem;
   setWheels: (wheels: Content.BoardCustomizerDocumentDataWheelsItem) => void;
   selectedDeck?: Content.BoardCustomizerDocumentDataDecksItem;
   setDeck: (deck: Content.BoardCustomizerDocumentDataDecksItem) => void;
-  selectedTruck?: Content.BoardCustomizerDocumentDataMetalsItem;
+  selectedTrucks?: Content.BoardCustomizerDocumentDataMetalsItem;
   setTrucks: (trucks: Content.BoardCustomizerDocumentDataMetalsItem) => void;
-  selectedBolt?: Content.BoardCustomizerDocumentDataMetalsItem;
+  selectedBolts?: Content.BoardCustomizerDocumentDataMetalsItem;
   setBolts: (bolts: Content.BoardCustomizerDocumentDataMetalsItem) => void;
 };
 
