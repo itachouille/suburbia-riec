@@ -5,29 +5,56 @@ import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 
 type CustomizeControlsContext = {
   selectedWheel?: Content.BoardCustomizerDocumentDataWheelsItem;
-  setWheel: (wheel: Content.BoardCustomizerDocumentDataWheelsItem) => void;
+  setWheels: (wheels: Content.BoardCustomizerDocumentDataWheelsItem) => void;
+  selectedDeck?: Content.BoardCustomizerDocumentDataDecksItem;
+  setDeck: (deck: Content.BoardCustomizerDocumentDataDecksItem) => void;
+  selectedTruck?: Content.BoardCustomizerDocumentDataMetalsItem;
+  setTrucks: (trucks: Content.BoardCustomizerDocumentDataMetalsItem) => void;
+  selectedBolt?: Content.BoardCustomizerDocumentDataMetalsItem;
+  setBolts: (bolts: Content.BoardCustomizerDocumentDataMetalsItem) => void;
 };
 
 const defaultContext: CustomizeControlsContext = {
-  setWheel: () => {},
+  setWheels: () => {},
+  setDeck: () => {},
+  setTrucks: () => {},
+  setBolts: () => {},
 };
 
 const CustomizerControlsContext = createContext(defaultContext);
 
-type CustomizerControlersProvidersProps = {
+type CustomizerControlersProviderProps = {
   children?: ReactNode;
-  defaultWheel?: Content.BoardCustomizerDocumentDataWheelsItem;
+  defaultWheels?: Content.BoardCustomizerDocumentDataWheelsItem;
+  defaultDeck?: Content.BoardCustomizerDocumentDataDecksItem;
+  defaulTrucks?: Content.BoardCustomizerDocumentDataMetalsItem;
+  defaultBolts?: Content.BoardCustomizerDocumentDataMetalsItem;
 };
 
-export function CustomizerControlersProviders({
+export function CustomizerControlersProvider({
   children,
-  defaultWheel,
-}: CustomizerControlersProvidersProps) {
-  const [selectedWheel, setWheel] = useState(defaultWheel);
+  defaultWheels,
+  defaultDeck,
+  defaulTrucks,
+  defaultBolts,
+}: CustomizerControlersProviderProps) {
+  const [selectedWheels, setWheels] = useState(defaultWheels);
+  const [selectedDeck, setDeck] = useState(defaultDeck);
+  const [selectedTrucks, setTrucks] = useState(defaulTrucks);
+  const [selectedBolts, setBolts] = useState(defaultBolts);
 
   const value = useMemo<CustomizeControlsContext>(() => {
-    return { selectedWheel, setWheel };
-  }, [selectedWheel]);
+    return {
+      selectedWheels,
+      setWheels,
+      selectedDeck,
+      setDeck,
+      selectedTrucks,
+      setTrucks,
+      selectedBolts,
+      setBolts,
+    };
+  }, [selectedWheels, selectedDeck, selectedTrucks, selectedBolts]);
 
   return (
     <CustomizerControlsContext.Provider value={value}>
