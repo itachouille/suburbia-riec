@@ -18,7 +18,7 @@ const dmMono = DM_Mono({
   weight: "500",
 });
 
-export async function generateMetaData(): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
   const settings = await client.getSingle("settings");
 
