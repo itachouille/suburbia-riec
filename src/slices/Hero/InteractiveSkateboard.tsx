@@ -208,7 +208,7 @@ function Scene({
             {/* Front Hotspot */}
             <Hotspot
               isVisible={!animating && showHotspot.front}
-              position={[0, 0.38, 1]}
+              position={[0.1, 0.38, 1]}
               color="#B8FC39"
             />
 
@@ -221,7 +221,7 @@ function Scene({
             {/* Middle Hotspot */}
             <Hotspot
               isVisible={!animating && showHotspot.middle}
-              position={[0, 0.33, 0]}
+              position={[0.05, 0.3, 0.1]}
               color="#FF7A51"
             />
 
@@ -234,7 +234,7 @@ function Scene({
             {/* Back Hotspot */}
             <Hotspot
               isVisible={!animating && showHotspot.back}
-              position={[0, 0.35, -0.9]}
+              position={[0.05, 0.35, -0.9]}
               color="#46ACFA"
             />
 
