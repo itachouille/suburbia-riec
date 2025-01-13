@@ -236,15 +236,15 @@ export interface SettingsDocumentDataFooterSkateboardsItem {
  */
 interface SettingsDocumentData {
   /**
-   * Sire Title field in *Settings*
+   * Site Title field in *Settings*
    *
    * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: settings.sire_title
+   * - **API ID Path**: settings.site_title
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
-  sire_title: prismic.KeyTextField;
+  site_title: prismic.KeyTextField;
 
   /**
    * Meta Description field in *Settings*
