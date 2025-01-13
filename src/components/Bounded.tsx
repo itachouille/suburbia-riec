@@ -9,13 +9,12 @@ type BoundedProps = {
 };
 
 export function Bounded({
-  as: Comp = "section",
-  className,
+  as: className,
   children,
   ...restProps
 }: BoundedProps) {
   return (
-    <Comp
+    <section
       className={clsx(
         "px-6 ~py-10/16 [.header+&]:pt-44 [.header+&]:md:pt-32",
         className
@@ -23,6 +22,6 @@ export function Bounded({
       {...restProps}
     >
       <div className="mx-auto w-full max-w-6xl">{children}</div>
-    </Comp>
+    </section>
   );
 }
