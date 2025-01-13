@@ -5,12 +5,14 @@ import {
   ColorField,
   Content,
   ImageField,
+  isFilled,
   KeyTextField,
 } from "@prismicio/client";
 import { PrismicNextImage, PrismicNextImageProps } from "@prismicio/next";
 import clsx from "clsx";
-import { ComponentProps, ReactNode } from "react";
+import { ComponentProps, ReactNode, useEffect } from "react";
 import { useCustomizerControls } from "./context";
+import { useRouter } from "next/navigation";
 
 type Props = Pick<
   Content.BoardCustomizerDocumentData,
@@ -20,6 +22,8 @@ type Props = Pick<
 };
 
 export function Controls({ wheels, decks, metals, className }: Props) {
+  const router = useRouter();
+
   const {
     setBolts,
     setDeck,
@@ -30,6 +34,23 @@ export function Controls({ wheels, decks, metals, className }: Props) {
     selectedTrucks,
     selectedWheels,
   } = useCustomizerControls();
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+
+    if (isFilled.keyText(selectedDeck?.uid))
+      url.searchParams.set("deck", selectedDeck.uid);
+    if (isFilled.keyText(selectedWheels?.uid))
+      url.searchParams.set("wheels", selectedWheels.uid);
+    if (isFilled.keyText(selectedTrucks?.uid))
+      url.searchParams.set("trucks", selectedTrucks.uid);
+    if (isFilled.keyText(selectedBolts?.uid))
+      url.searchParams.set("bolts", selectedBolts.uid);
+
+    router.replace(url.href);
+
+    return () => {};
+  }, [selectedWheels, selectedDeck, selectedTrucks, selectedBolts, router]);
 
   return (
     <div className={clsx("flex flex-col gap-6", className)}>
